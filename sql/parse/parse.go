@@ -1372,10 +1372,12 @@ func columnOrderToColumnOrder(order *sqlparser.ColumnOrder) *sql.ColumnOrder {
 
 func convertDropTable(ctx *sql.Context, c *sqlparser.DDL) (sql.Node, error) {
 	tableNames := make([]string, len(c.FromTables))
+	var db string
 	for i, t := range c.FromTables {
 		tableNames[i] = t.Name.String()
+		db = t.Qualifier.String()
 	}
-	return plan.NewDropTable(sql.UnresolvedDatabase(""), c.IfExists, tableNames...), nil
+	return plan.NewDropTable(sql.UnresolvedDatabase(db), c.IfExists, tableNames...), nil
 }
 
 func convertTruncateTable(ctx *sql.Context, c *sqlparser.DDL) (sql.Node, error) {
